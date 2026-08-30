@@ -15,9 +15,10 @@ export default async function handler(request) {
   if (request.method === 'OPTIONS') return new Response('', { status: 204, headers: cors });
   if (request.method !== 'POST') return json({ error: 'POST only' }, 405);
 
-  const apiKey = process.env.GROQ_API_KEY;
+  const provider = process.env.GEMINI_API_KEY ? 'gemini' : process.env.OPENROUTER_API_KEY ? 'openrouter' : process.env.GROQ_API_KEY ? 'groq' : '';
+  const apiKey = provider === 'gemini' ? process.env.GEMINI_API_KEY : provider === 'openrouter' ? process.env.OPENROUTER_API_KEY : process.env.GROQ_API_KEY;
   if (!apiKey) {
-    return json({ error: 'Secure analysis is not configured yet. Add GROQ_API_KEY to Netlify environment variables and redeploy.' }, 503);
+    return json({ error: 'Secure analysis is not configured. Add GEMINI_API_KEY, OPENROUTER_API_KEY, or GROQ_API_KEY to Netlify environment variables and redeploy.' }, 503);
   }
 
   let body;
@@ -28,22 +29,23 @@ export default async function handler(request) {
     return json({ error: 'Only JPEG, PNG, WebP, or GIF data URLs are accepted.' }, 400);
   }
   const prompt = typeof body.prompt === 'string' && body.prompt.length < 20000 ? body.prompt : 'Analyze this item for an eBay listing and return JSON.';
-  const content = [{ type: 'text', text: prompt }];
-  images.forEach(image => content.push({ type: 'image_url', image_url: { url: image.data } }));
-
   let providerResponse;
   try {
-    providerResponse = await fetch('https://api.groq.com/openai/v1/chat/completions', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${apiKey}` },
-      body: JSON.stringify({
-        model: 'qwen/qwen3.6-27b',
-        messages: [{ role: 'user', content }],
-        temperature: 0.2,
-        max_completion_tokens: 4096,
-        response_format: { type: 'json_object' }
-      })
-    });
+    if (provider === 'gemini') {
+      const parts = [{ text: prompt }];
+      images.forEach(image => { const match = image.data.match(/^data:([^;]+);base64,(.+)$/s); if (match) parts.push({ inline_data: { mime_type: match[1], data: match[2] } }); });
+      providerResponse = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${encodeURIComponent(apiKey)}`, {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ contents: [{ parts }], generationConfig: { temperature: 0.2, maxOutputTokens: 1400, responseMimeType: 'application/json' } })
+      });
+    } else {
+      const content = [{ type: 'text', text: prompt }];
+      images.forEach(image => content.push({ type: 'image_url', image_url: { url: image.data } }));
+      providerResponse = await fetch(provider === 'openrouter' ? 'https://openrouter.ai/api/v1/chat/completions' : 'https://api.groq.com/openai/v1/chat/completions', {
+        method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${apiKey}` },
+        body: JSON.stringify({ model: provider === 'openrouter' ? 'openrouter/free' : 'qwen/qwen3.6-27b', messages: [{ role: 'user', content }], temperature: 0.2, max_tokens: 1400, ...(provider === 'groq' ? { max_completion_tokens: 1400, response_format: { type: 'json_object' } } : {}) })
+      });
+    }
   } catch (error) {
     return json({ error: `Vision provider connection failed: ${error.message}` }, 502);
   }
@@ -53,12 +55,12 @@ export default async function handler(request) {
     const message = providerBody?.error?.message || `Vision provider returned HTTP ${providerResponse.status}.`;
     return json({ error: message }, providerResponse.status === 429 ? 429 : 502);
   }
-  const raw = providerBody?.choices?.[0]?.message?.content;
+  const raw = provider === 'gemini' ? providerBody?.candidates?.[0]?.content?.parts?.map(part => part.text || '').join('') : providerBody?.choices?.[0]?.message?.content;
   if (!raw) return json({ error: 'The vision provider returned no analysis.' }, 502);
 
   try {
     const result = normalize(parseObject(raw));
-    return json({ result }, 200);
+    return json({ result, provider }, 200);
   } catch (error) {
     return json({ error: `The vision provider returned an unusable result: ${error.message}` }, 502);
   }
