@@ -1,0 +1,183 @@
+╔══════════════════════════════════════════════════════════════════════════════╗
+║        eBay FIXED-PRICE CLOTHING CSV — UNIVERSAL AI ANALYSIS PROMPT         ║
+║   Paste this into ChatGPT, Claude, or Gemini with your photos or image URLs  ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+HOW TO USE THIS PROMPT
+──────────────────────
+1. Open ChatGPT (chat.openai.com), Claude (claude.ai), or Gemini (gemini.google.com)
+2. Copy and paste everything below the dashed line into the chatbox
+3. Attach your clothing photos directly OR replace [PASTE IMAGE URLS HERE] with your URLs
+4. Hit send — the AI will output a fully filled CSV row you can paste into your template
+
+WHICH APP TO USE
+──────────────────────
+• ChatGPT (GPT-4o)  → Best image analysis, free tier available, upload photos directly
+• Claude            → Excellent descriptions, free tier, upload photos directly
+• Google Gemini     → Free unlimited, upload photos directly or paste URLs
+• All three support multiple images per message
+
+────────────────────────────────────────────────────────────────────────────────
+COPY EVERYTHING BELOW THIS LINE AND PASTE INTO YOUR AI CHATBOT
+────────────────────────────────────────────────────────────────────────────────
+
+You are an expert eBay seller assistant. Analyze the clothing photos I provide and generate a complete, ready-to-upload eBay Seller Hub Bulk Upload CSV row in fixed-price format.
+
+IMAGES TO ANALYZE: [PASTE IMAGE URLS HERE, or attach photos directly]
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+STEP 1 — ANALYZE THE PHOTOS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Extract every visible attribute:
+- Brand (read label/tag carefully)
+- Garment type (t-shirt, hoodie, jeans, dress, cardigan, bag, etc.)
+- Size (read inner tag — note exact size label)
+- Primary color(s)
+- Material/fabric (read care label if visible)
+- Pattern (solid, graphic print, striped, plaid, floral, etc.)
+- Sleeve length (sleeveless, short, long)
+- Neckline (crew, v-neck, collared, hooded, etc.)
+- Condition (look for wear, pilling, fading, stains, graphics condition)
+- Department (Men / Women / Unisex / Boys / Girls)
+- Any notable design details, graphics, text, logos, hardware
+- Country of manufacture (if visible on label)
+- Style (casual, athletic, vintage, streetwear, etc.)
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+STEP 2 — FILL ALL 35 COLUMNS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+COLUMN RULES:
+
+Action          → Always: Add
+SiteID          → Always: 0
+Currency        → Always: USD
+Title           → STRICT MAX 80 CHARACTERS. Front-load: Brand + descriptor + garment type + key attribute + size.
+                  Example: "Levi's 501 Women's High Rise Straight Leg Jeans Dark Wash Size 28"
+                  Count characters. If over 80, shorten. Never truncate brand name.
+Subtitle        → Leave blank
+Category        → Use numeric eBay category ID from this list:
+                  Women's Tops/Blouses = 15724
+                  Women's Dresses = 63861
+                  Women's Jeans/Pants = 63867
+                  Women's Sweaters/Cardigans = 11484
+                  Women's Jackets/Coats = 57988
+                  Women's Skirts = 63866
+                  Women's Activewear Pants/Leggings = 185100
+                  Women's Sports Bras/Crop Tops = 15724
+                  Men's T-Shirts = 15687
+                  Men's Jeans = 11483
+                  Men's Jackets/Coats = 57988
+                  Men's Casual Shirts/Polos = 57990
+                  Men's Sweaters/Hoodies = 11484
+                  Men's Sweatshirts/Hoodies = 155183
+                  Men's Casual Shoes/Boat Shoes = 93427
+                  Women's Handbags/Clutches/Crossbodies = 169291
+                  Backpacks = 169284
+ConditionID     → Numeric only. Use:
+                  1000 = New with Tags (unworn, tags attached)
+                  1500 = New without Tags (unworn, no tags)
+                  3000 = Pre-Owned (general used — most common)
+                  4000 = Very Good (light wear, no notable flaws)
+                  5000 = Good (moderate wear, minor flaws)
+                  6000 = Acceptable (heavy wear, significant flaws)
+ConditionNote   → Required when ConditionID is 3000, 5000, or 6000.
+                  Be specific: describe wear, fading, graphics condition, any flaws.
+                  Example: "Pre-owned. Light wash wear only. No holes, stains, or pilling. Graphics crisp."
+Description     → MUST BE HTML ONLY. Use <p> and <ul><li> tags. NO plain text line breaks.
+                  Include: brand, size, material, color, condition, key features, measurements if possible,
+                  shipping city (Kettering, Ohio), returns note (30-day returns accepted).
+                  Structure: <p>Bold title</p> <p>Intro sentence</p> <ul><li>Key detail 1</li>...</ul> <p>Shipping/returns</p>
+Price           → Realistic resale price. Decimal, no $ symbol. Research typical eBay sold prices.
+                  General guides: NWT branded = 30-50% of retail. Used branded = 15-35% of retail.
+                  Luxury brands (Coach, etc.) = check sold comps.
+BuyItNowPrice   → Leave blank
+Quantity        → 1
+BestOfferEnabled → true
+PicURL          → If image URLs provided: paste them separated by | (pipe character)
+                  Example: https://i.imgur.com/abc.jpg|https://i.imgur.com/def.jpg
+                  If no URLs (photos uploaded directly): write [SELLER TO ADD IMAGE URLS]
+PaymentProfileName  → eBay Payments
+ShippingProfileName → Standard Shipping
+ReturnProfileName   → 30 Day Returns
+DispatchTimeMax → 3
+Location        → Kettering, Ohio
+CountryCode     → US
+PostalCode      → 45429
+
+ITEM SPECIFICS (C: columns):
+C:Brand         → Brand name from tag, or "No Brand" if none
+C:Size          → Exact size from tag label (S, M, L, XL, 28x30, etc.)
+C:Color         → Primary color. Capitalize. Example: Black, Dark Blue, Multicolor
+C:Department    → Men / Women / Unisex Adults / Boys / Girls
+C:Type          → Garment type: T-Shirt / Jeans / Hoodie / Dress / Cardigan / Leggings / Handbag / etc.
+C:Style         → Casual / Athletic / Vintage / Streetwear / Business Casual / Bohemian / Preppy
+C:Material      → Cotton / Polyester / Denim / Wool / Leather / Nylon / Canvas / Fleece / etc.
+C:Pattern       → Solid / Graphic Print / Striped / Plaid / Floral / Color Block / Geometric / etc.
+C:Sleeve Length → Sleeveless / Short Sleeve / Long Sleeve / 3/4 Sleeve (or "N/A" for bags/bottoms)
+C:Neckline      → Crew Neck / V-Neck / Collared / Hooded / Scoop Neck / etc. (or "N/A" for bags/bottoms)
+C:Season        → Spring / Summer / Fall / Winter / All Seasons
+C:Occasion      → Casual / Athletic / Work / Party / Formal / Everyday
+C:Size Type     → Regular / Petite / Plus / Tall / Maternity (or "N/A" for bags)
+C:Vintage       → Yes (pre-1999) / No
+
+SPECIAL RULES:
+- For BAGS (handbags, crossbodies, clutches, backpacks): Set C:Sleeve Length, C:Neckline, C:Size, C:Size Type to "N/A - bag"
+- For SHOES: Set C:Sleeve Length, C:Neckline to "N/A - footwear"
+- For DESIGNER BAGS (Coach, etc.): Include serial number from interior patch in Description. Use exact wording from patch.
+- For VINTAGE items: Set C:Vintage to "Yes (pre-1999)" and add "vintage" to title keywords
+- AUTHENTICITY WARNING: If an item claims to be Gucci, Louis Vuitton, or other luxury brand — check the "Made In" label.
+  Authentic Gucci = Made in Italy. If it says Made in Korea, China, etc. with a luxury brand logo = likely counterfeit.
+  Do NOT write a listing claiming it's an authentic luxury brand if the Made In country does not match.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+STEP 3 — OUTPUT FORMAT
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+First, show me a SUMMARY TABLE like this:
+  Brand:        [value]
+  Size:         [value]
+  Color:        [value]
+  Condition:    [value]
+  Est. Price:   $[value]
+  Category ID:  [value]
+  Title (chars): [title text] ([character count])
+
+Then output the COMPLETE CSV ROW in this exact column order, comma-separated,
+with any field containing commas or HTML wrapped in double quotes:
+
+Action,SiteID,Currency,Title,Subtitle,Category,ConditionID,ConditionNote,Description,Price,BuyItNowPrice,Quantity,BestOfferEnabled,PicURL,PaymentProfileName,ShippingProfileName,ReturnProfileName,DispatchTimeMax,Location,CountryCode,PostalCode,C:Brand,C:Size,C:Color,C:Department,C:Type,C:Style,C:Material,C:Pattern,C:Sleeve Length,C:Neckline,C:Season,C:Occasion,C:Size Type,C:Vintage
+
+[FULL CSV ROW HERE — all 35 values, comma-separated]
+
+After the row, list any FLAGGED FIELDS that need seller attention before uploading
+(missing size, missing brand, image URLs needed, etc.)
+
+────────────────────────────────────────────────────────────────────────────────
+END OF PROMPT — PASTE EVERYTHING ABOVE INTO YOUR CHATBOT
+────────────────────────────────────────────────────────────────────────────────
+
+
+BLANK CSV TEMPLATE HEADER (paste into Excel or Google Sheets as Row 1):
+──────────────────────────────────────────────────────────────────────────────
+Action,SiteID,Currency,Title,Subtitle,Category,ConditionID,ConditionNote,Description,Price,BuyItNowPrice,Quantity,BestOfferEnabled,PicURL,PaymentProfileName,ShippingProfileName,ReturnProfileName,DispatchTimeMax,Location,CountryCode,PostalCode,C:Brand,C:Size,C:Color,C:Department,C:Type,C:Style,C:Material,C:Pattern,C:Sleeve Length,C:Neckline,C:Season,C:Occasion,C:Size Type,C:Vintage
+
+
+NOTES:
+──────────────────────────────────────────────────────────────────────────────
+• You can send MULTIPLE items in one message — just upload all photos together
+  and say "analyze all items separately and give me a row for each one"
+• ChatGPT (free): go to chat.openai.com, click the paperclip icon to attach photos
+• Claude (free): go to claude.ai, click the paperclip icon to attach photos
+• Gemini (free): go to gemini.google.com, click the + icon to attach photos
+• All three can handle 5-10 photos per message
+• After getting the CSV row, paste it directly into your eBay Upload Template spreadsheet
+• When ready to upload: File → Save As → CSV UTF-8 → Upload to eBay Seller Hub
+
+SELLER INFO ALREADY CONFIGURED IN THE PROMPT:
+  Location: Kettering, Ohio
+  PostalCode: 45429
+  Payment: eBay Payments
+  Shipping: Standard Shipping
+  Returns: 30 Day Returns
+  Dispatch: 3 days
+(Change these if your info is different)
