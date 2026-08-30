@@ -6,7 +6,7 @@ This is a phone-first static eBay bulk-listing helper. It accepts up to five pho
 
 Deploy the folder to the existing Netlify site. The included `netlify.toml` publishes the project root and registers `netlify/functions/analyze.mjs` as the secure analysis endpoint.
 
-In Netlify, open Site configuration → Environment variables and add one provider secret. The function uses `GEMINI_API_KEY` first, then `OPENROUTER_API_KEY`, then `GROQ_API_KEY`. The frontend never receives or stores the key. Gemini AI Studio is the best no-cost hosted alternative to try first; OpenRouter’s `openrouter/free` router is another free option with changing model availability. Groq remains available, but the app now uses a compact prompt, two contact-sheet images at most, and a 1,400-token output cap to reduce TPM errors.
+In Netlify, open Site configuration → Environment variables and add one provider secret. The function uses `OPENROUTER_API_KEY` first, then `GEMINI_API_KEY`, then `GROQ_API_KEY`. The frontend never receives or stores the key. OpenRouter’s `openrouter/free` router is the no-credit hosted option to try first; Gemini AI Studio is optional if your account has access, and Groq remains an additional fallback. The app uses a compact prompt, two contact-sheet images at most, and a 1,400-token output cap to reduce TPM errors.
 
 No Manus credits are used. Provider free access and rate limits can change, so the app includes both a browser-local open-source fallback and multiple hosted-provider choices. Never treat an AI-generated result as final without checking the photos and eBay rules.
 
