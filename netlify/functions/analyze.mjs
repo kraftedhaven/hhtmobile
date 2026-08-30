@@ -15,10 +15,10 @@ export default async function handler(request) {
   if (request.method === 'OPTIONS') return new Response('', { status: 204, headers: cors });
   if (request.method !== 'POST') return json({ error: 'POST only' }, 405);
 
-  const provider = process.env.GEMINI_API_KEY ? 'gemini' : process.env.OPENROUTER_API_KEY ? 'openrouter' : process.env.GROQ_API_KEY ? 'groq' : '';
-  const apiKey = provider === 'gemini' ? process.env.GEMINI_API_KEY : provider === 'openrouter' ? process.env.OPENROUTER_API_KEY : process.env.GROQ_API_KEY;
+  const provider = process.env.OPENROUTER_API_KEY ? 'openrouter' : process.env.GEMINI_API_KEY ? 'gemini' : process.env.GROQ_API_KEY ? 'groq' : '';
+  const apiKey = provider === 'openrouter' ? process.env.OPENROUTER_API_KEY : provider === 'gemini' ? process.env.GEMINI_API_KEY : process.env.GROQ_API_KEY;
   if (!apiKey) {
-    return json({ error: 'Secure analysis is not configured. Add GEMINI_API_KEY, OPENROUTER_API_KEY, or GROQ_API_KEY to Netlify environment variables and redeploy.' }, 503);
+    return json({ error: 'Secure analysis is not configured. Add OPENROUTER_API_KEY, GEMINI_API_KEY, or GROQ_API_KEY to Netlify environment variables and redeploy.' }, 503);
   }
 
   let body;
@@ -34,7 +34,7 @@ export default async function handler(request) {
     if (provider === 'gemini') {
       const parts = [{ text: prompt }];
       images.forEach(image => { const match = image.data.match(/^data:([^;]+);base64,(.+)$/s); if (match) parts.push({ inline_data: { mime_type: match[1], data: match[2] } }); });
-      providerResponse = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${encodeURIComponent(apiKey)}`, {
+      providerResponse = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-3.6-flash:generateContent?key=${encodeURIComponent(apiKey)}`, {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ contents: [{ parts }], generationConfig: { temperature: 0.2, maxOutputTokens: 1400, responseMimeType: 'application/json' } })
       });
